@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace qa.Migrations
 {
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,7 @@ namespace qa.Migrations
                     BrowserInfo = table.Column<string>(maxLength: 512, nullable: true),
                     HttpMethod = table.Column<string>(maxLength: 16, nullable: true),
                     Url = table.Column<string>(maxLength: 256, nullable: true),
-                    Exceptions = table.Column<string>(maxLength: 4000, nullable: true),
+                    Exceptions = table.Column<string>(maxLength: 2000, nullable: true),
                     Comments = table.Column<string>(maxLength: 256, nullable: true),
                     HttpStatusCode = table.Column<int>(nullable: true)
                 },
@@ -165,7 +165,7 @@ namespace qa.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(maxLength: 128, nullable: false),
-                    Value = table.Column<string>(maxLength: 2048, nullable: false),
+                    Value = table.Column<string>(maxLength: 2000, nullable: false),
                     ProviderName = table.Column<string>(maxLength: 64, nullable: true),
                     ProviderKey = table.Column<string>(maxLength: 64, nullable: true)
                 },
@@ -224,7 +224,7 @@ namespace qa.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false, defaultValue: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false, defaultValue: false),
-                    AccessFailedCount = table.Column<int>(nullable: false, defaultValue: 0)
+                    AccessFailedCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -500,6 +500,27 @@ namespace qa.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "QaTenant",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ExtraProperties = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(maxLength: 40, nullable: true),
+                    AbpTenantId = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QaTenant", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QaTenant_AbpTenants_AbpTenantId",
+                        column: x => x.AbpTenantId,
+                        principalTable: "AbpTenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AbpUserClaims",
                 columns: table => new
                 {
@@ -660,7 +681,7 @@ namespace qa.Migrations
                 columns: table => new
                 {
                     Type = table.Column<string>(maxLength: 250, nullable: false),
-                    Value = table.Column<string>(maxLength: 4000, nullable: false),
+                    Value = table.Column<string>(maxLength: 300, nullable: false),
                     ApiResourceId = table.Column<Guid>(nullable: false),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
                     Expiration = table.Column<DateTime>(nullable: true)
@@ -827,7 +848,7 @@ namespace qa.Migrations
                 columns: table => new
                 {
                     Type = table.Column<string>(maxLength: 250, nullable: false),
-                    Value = table.Column<string>(maxLength: 4000, nullable: false),
+                    Value = table.Column<string>(maxLength: 300, nullable: false),
                     ClientId = table.Column<Guid>(nullable: false),
                     Description = table.Column<string>(maxLength: 2000, nullable: true),
                     Expiration = table.Column<DateTime>(nullable: true)
@@ -1059,6 +1080,12 @@ namespace qa.Migrations
                 name: "IX_IdentityServerPersistedGrants_SubjectId_ClientId_Type",
                 table: "IdentityServerPersistedGrants",
                 columns: new[] { "SubjectId", "ClientId", "Type" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QaTenant_AbpTenantId",
+                table: "QaTenant",
+                column: "AbpTenantId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -1154,10 +1181,10 @@ namespace qa.Migrations
                 name: "IdentityServerPersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "AbpEntityChanges");
+                name: "QaTenant");
 
             migrationBuilder.DropTable(
-                name: "AbpTenants");
+                name: "AbpEntityChanges");
 
             migrationBuilder.DropTable(
                 name: "AbpOrganizationUnits");
@@ -1176,6 +1203,9 @@ namespace qa.Migrations
 
             migrationBuilder.DropTable(
                 name: "IdentityServerIdentityResources");
+
+            migrationBuilder.DropTable(
+                name: "AbpTenants");
 
             migrationBuilder.DropTable(
                 name: "AbpAuditLogs");

@@ -16,7 +16,7 @@ namespace qa.EntityFrameworkCore
             var configuration = BuildConfiguration();
 
             var builder = new DbContextOptionsBuilder<qaMigrationsDbContext>()
-                .UseSqlServer(configuration.GetConnectionString("Default"));
+                .UseOracle(configuration.GetConnectionString("Default"));
 
             return new qaMigrationsDbContext(builder.Options);
         }
