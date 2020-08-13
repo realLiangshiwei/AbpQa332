@@ -44,13 +44,7 @@ namespace qa.EntityFrameworkCore
 
             Configure<AbpDbContextOptions>(options =>
             {
-                var config = Devart.Data.Oracle.Entity.Configuration.OracleEntityProviderConfig.Instance;
-                config.Workarounds.DisableQuoting = true;
-                config.CodeFirstOptions.UseNonLobStrings = true;
-                config.CodeFirstOptions.UseNonUnicodeStrings = true;
-                /* The main point to change your DBMS.
-                 * See also qaMigrationsDbContextFactory for EF Core tooling. */
-                AbpDbContextOptionsOracleDevartExtensions.UseOracle(options);
+                options.UseOracle();
             });
         }
     }

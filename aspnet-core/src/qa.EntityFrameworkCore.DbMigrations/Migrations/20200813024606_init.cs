@@ -7,6 +7,9 @@ namespace qa.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "QA");
+
             migrationBuilder.CreateTable(
                 name: "AbpAuditLogs",
                 columns: table => new
@@ -172,27 +175,6 @@ namespace qa.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AbpSettings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AbpTenants",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    ExtraProperties = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(maxLength: 40, nullable: true),
-                    CreationTime = table.Column<DateTime>(nullable: false),
-                    CreatorId = table.Column<Guid>(nullable: true),
-                    LastModificationTime = table.Column<DateTime>(nullable: true),
-                    LastModifierId = table.Column<Guid>(nullable: true),
-                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
-                    DeleterId = table.Column<Guid>(nullable: true),
-                    DeletionTime = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(maxLength: 64, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AbpTenants", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -383,6 +365,49 @@ namespace qa.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SaasEditions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ExtraProperties = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(maxLength: 40, nullable: true),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    CreatorId = table.Column<Guid>(nullable: true),
+                    LastModificationTime = table.Column<DateTime>(nullable: true),
+                    LastModifierId = table.Column<Guid>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(nullable: true),
+                    DeletionTime = table.Column<DateTime>(nullable: true),
+                    DisplayName = table.Column<string>(maxLength: 128, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaasEditions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SaasTenants",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ExtraProperties = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(maxLength: 40, nullable: true),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    CreatorId = table.Column<Guid>(nullable: true),
+                    LastModificationTime = table.Column<DateTime>(nullable: true),
+                    LastModifierId = table.Column<Guid>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(nullable: true),
+                    DeletionTime = table.Column<DateTime>(nullable: true),
+                    Name = table.Column<string>(maxLength: 64, nullable: false),
+                    EditionId = table.Column<Guid>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaasTenants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AbpAuditLogActions",
                 columns: table => new
                 {
@@ -476,46 +501,6 @@ namespace qa.Migrations
                         name: "FK_AbpRoleClaims_AbpRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AbpRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AbpTenantConnectionStrings",
-                columns: table => new
-                {
-                    TenantId = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(maxLength: 64, nullable: false),
-                    Value = table.Column<string>(maxLength: 1024, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AbpTenantConnectionStrings", x => new { x.TenantId, x.Name });
-                    table.ForeignKey(
-                        name: "FK_AbpTenantConnectionStrings_AbpTenants_TenantId",
-                        column: x => x.TenantId,
-                        principalTable: "AbpTenants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QaTenant",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    ExtraProperties = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(maxLength: 40, nullable: true),
-                    AbpTenantId = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QaTenant", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_QaTenant_AbpTenants_AbpTenantId",
-                        column: x => x.AbpTenantId,
-                        principalTable: "AbpTenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -883,6 +868,64 @@ namespace qa.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SaasTenantConnectionStrings",
+                columns: table => new
+                {
+                    TenantId = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(maxLength: 64, nullable: false),
+                    Value = table.Column<string>(maxLength: 1024, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SaasTenantConnectionStrings", x => new { x.TenantId, x.Name });
+                    table.ForeignKey(
+                        name: "FK_SaasTenantConnectionStrings_SaasTenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "SaasTenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CT_CA_TENANT",
+                schema: "QA",
+                columns: table => new
+                {
+                    C_TENANT = table.Column<int>(nullable: false),
+                    D_INS = table.Column<DateTime>(nullable: false),
+                    D_UPD = table.Column<DateTime>(nullable: true),
+                    C_USR_INS = table.Column<string>(maxLength: 10, nullable: true),
+                    C_USR_UPD = table.Column<string>(maxLength: 10, nullable: true),
+                    C_DELETED = table.Column<bool>(nullable: false, defaultValue: false),
+                    C_USR_DEL = table.Column<string>(maxLength: 10, nullable: true),
+                    D_DEL = table.Column<DateTime>(nullable: true),
+                    C_ABP_TENANT = table.Column<Guid>(nullable: false),
+                    S_TENANT_INT = table.Column<string>(maxLength: 30, nullable: true),
+                    S_TENANT = table.Column<string>(maxLength: 50, nullable: true),
+                    C_COMPANY = table.Column<int>(nullable: false),
+                    S_COMMENT = table.Column<string>(maxLength: 200, nullable: true),
+                    C_MASTER_TENANT = table.Column<int>(nullable: true),
+                    C_MASTER = table.Column<bool>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CT_CA_TENANT", x => x.C_TENANT);
+                    table.ForeignKey(
+                        name: "FK_CT_CA_TENANT_SaasTenants_C_ABP_TENANT",
+                        column: x => x.C_ABP_TENANT,
+                        principalTable: "SaasTenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CT_CA_TENANT_CT_CA_TENANT_C_MASTER_TENANT",
+                        column: x => x.C_MASTER_TENANT,
+                        principalSchema: "QA",
+                        principalTable: "CT_CA_TENANT",
+                        principalColumn: "C_TENANT",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AbpEntityPropertyChanges",
                 columns: table => new
                 {
@@ -1005,11 +1048,6 @@ namespace qa.Migrations
                 columns: new[] { "Name", "ProviderName", "ProviderKey" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AbpTenants_Name",
-                table: "AbpTenants",
-                column: "Name");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AbpUserClaims_UserId",
                 table: "AbpUserClaims",
                 column: "UserId");
@@ -1082,10 +1120,27 @@ namespace qa.Migrations
                 columns: new[] { "SubjectId", "ClientId", "Type" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_QaTenant_AbpTenantId",
-                table: "QaTenant",
-                column: "AbpTenantId",
+                name: "IX_SaasEditions_DisplayName",
+                table: "SaasEditions",
+                column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SaasTenants_Name",
+                table: "SaasTenants",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CT_CA_TENANT_C_ABP_TENANT",
+                schema: "QA",
+                table: "CT_CA_TENANT",
+                column: "C_ABP_TENANT",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CT_CA_TENANT_C_MASTER_TENANT",
+                schema: "QA",
+                table: "CT_CA_TENANT",
+                column: "C_MASTER_TENANT");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -1116,9 +1171,6 @@ namespace qa.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpSettings");
-
-            migrationBuilder.DropTable(
-                name: "AbpTenantConnectionStrings");
 
             migrationBuilder.DropTable(
                 name: "AbpUserClaims");
@@ -1181,7 +1233,14 @@ namespace qa.Migrations
                 name: "IdentityServerPersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "QaTenant");
+                name: "SaasEditions");
+
+            migrationBuilder.DropTable(
+                name: "SaasTenantConnectionStrings");
+
+            migrationBuilder.DropTable(
+                name: "CT_CA_TENANT",
+                schema: "QA");
 
             migrationBuilder.DropTable(
                 name: "AbpEntityChanges");
@@ -1205,7 +1264,7 @@ namespace qa.Migrations
                 name: "IdentityServerIdentityResources");
 
             migrationBuilder.DropTable(
-                name: "AbpTenants");
+                name: "SaasTenants");
 
             migrationBuilder.DropTable(
                 name: "AbpAuditLogs");

@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using qa.Localization;
 using qa.Web;
-using qa.Web.Menus;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.TestBase;
 using Volo.Abp.Localization;
@@ -65,7 +64,7 @@ namespace qa
         {
             services.Configure<AbpNavigationOptions>(options =>
             {
-                options.MenuContributors.Add(new SaasHostMenuContributor());
+                //options.MenuContributors.Add(new SaasHostMenuContributor());
             });
         }
 

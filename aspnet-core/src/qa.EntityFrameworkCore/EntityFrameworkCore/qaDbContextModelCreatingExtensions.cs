@@ -34,9 +34,11 @@ namespace qa.EntityFrameworkCore
                 .WithOne()
                 .HasPrincipalKey<Tenant>(x => x.Id)
                 .HasForeignKey<QaTenant>(x => x.AbpTenantId);
+
+
             builder.Entity<QaTenant>(b =>
             {
-                b.ToTable("CT_CA_TENANT", "ABDEV");
+                b.ToTable("CT_CA_TENANT", "QA");
                 b.ConfigureByConvention();
                 b.HasKey(x => x.Id);
                 b.Property(x => x.Id).HasColumnName("C_TENANT").IsRequired().ValueGeneratedNever();

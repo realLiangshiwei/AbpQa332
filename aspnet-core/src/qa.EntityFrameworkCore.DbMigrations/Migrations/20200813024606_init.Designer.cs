@@ -11,7 +11,7 @@ using qa.EntityFrameworkCore;
 namespace qa.Migrations
 {
     [DbContext(typeof(qaMigrationsDbContext))]
-    [Migration("20200810144752_init")]
+    [Migration("20200813024606_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1616,7 +1616,7 @@ namespace qa.Migrations
                     b.ToTable("AbpSettings");
                 });
 
-            modelBuilder.Entity("Volo.Abp.TenantManagement.Tenant", b =>
+            modelBuilder.Entity("Volo.Saas.Edition", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1644,6 +1644,68 @@ namespace qa.Migrations
                         .HasColumnName("DeletionTime")
                         .HasColumnType("TIMESTAMP(7)");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnName("DisplayName")
+                        .HasColumnType("NVARCHAR2(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("ExtraProperties")
+                        .HasColumnName("ExtraProperties")
+                        .HasColumnType("NVARCHAR2(2000)");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("IsDeleted")
+                        .HasColumnType("NUMBER(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnName("LastModificationTime")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<Guid?>("LastModifierId")
+                        .HasColumnName("LastModifierId")
+                        .HasColumnType("RAW(16)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DisplayName");
+
+                    b.ToTable("SaasEditions");
+                });
+
+            modelBuilder.Entity("Volo.Saas.Tenant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("RAW(16)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnName("ConcurrencyStamp")
+                        .HasColumnType("NVARCHAR2(40)")
+                        .HasMaxLength(40);
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnName("CreationTime")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnName("CreatorId")
+                        .HasColumnType("RAW(16)");
+
+                    b.Property<Guid?>("DeleterId")
+                        .HasColumnName("DeleterId")
+                        .HasColumnType("RAW(16)");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnName("DeletionTime")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<Guid?>("EditionId")
+                        .HasColumnType("RAW(16)");
+
                     b.Property<string>("ExtraProperties")
                         .HasColumnName("ExtraProperties")
                         .HasColumnType("NVARCHAR2(2000)");
@@ -1664,6 +1726,7 @@ namespace qa.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnName("Name")
                         .HasColumnType("NVARCHAR2(64)")
                         .HasMaxLength(64);
 
@@ -1671,56 +1734,108 @@ namespace qa.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("AbpTenants");
+                    b.ToTable("SaasTenants");
                 });
 
-            modelBuilder.Entity("Volo.Abp.TenantManagement.TenantConnectionString", b =>
+            modelBuilder.Entity("Volo.Saas.TenantConnectionString", b =>
                 {
                     b.Property<Guid>("TenantId")
                         .HasColumnType("RAW(16)");
 
                     b.Property<string>("Name")
+                        .HasColumnName("Name")
                         .HasColumnType("NVARCHAR2(64)")
                         .HasMaxLength(64);
 
                     b.Property<string>("Value")
                         .IsRequired()
+                        .HasColumnName("Value")
                         .HasColumnType("NVARCHAR2(1024)")
                         .HasMaxLength(1024);
 
                     b.HasKey("TenantId", "Name");
 
-                    b.ToTable("AbpTenantConnectionStrings");
+                    b.ToTable("SaasTenantConnectionStrings");
                 });
 
             modelBuilder.Entity("qa.QaTenant", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("RAW(16)");
+                    b.Property<int>("Id")
+                        .HasColumnName("C_TENANT")
+                        .HasColumnType("NUMBER(10)");
 
                     b.Property<Guid>("AbpTenantId")
+                        .HasColumnName("C_ABP_TENANT")
                         .HasColumnType("RAW(16)");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnName("ConcurrencyStamp")
-                        .HasColumnType("NVARCHAR2(40)")
-                        .HasMaxLength(40);
+                    b.Property<string>("Comment")
+                        .HasColumnName("S_COMMENT")
+                        .HasColumnType("NVARCHAR2(200)")
+                        .HasMaxLength(200);
 
-                    b.Property<string>("ExtraProperties")
-                        .HasColumnName("ExtraProperties")
-                        .HasColumnType("NVARCHAR2(2000)");
+                    b.Property<int>("CompanyId")
+                        .HasColumnName("C_COMPANY")
+                        .HasColumnType("NUMBER(10)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("NVARCHAR2(2000)");
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnName("D_INS")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<string>("CreatorName")
+                        .HasColumnName("C_USR_INS")
+                        .HasColumnType("NVARCHAR2(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<string>("DeleterName")
+                        .HasColumnName("C_USR_DEL")
+                        .HasColumnType("NVARCHAR2(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnName("D_DEL")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnName("S_TENANT")
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("C_DELETED")
+                        .HasColumnType("NUMBER(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool?>("IsMaster")
+                        .HasColumnName("C_MASTER")
+                        .HasColumnType("NUMBER(1)");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnName("D_UPD")
+                        .HasColumnType("TIMESTAMP(7)");
+
+                    b.Property<string>("LastModifierName")
+                        .HasColumnName("C_USR_UPD")
+                        .HasColumnType("NVARCHAR2(10)")
+                        .HasMaxLength(10);
+
+                    b.Property<int?>("MasterId")
+                        .HasColumnName("C_MASTER_TENANT")
+                        .HasColumnType("NUMBER(10)");
+
+                    b.Property<string>("ShortName")
+                        .HasColumnName("S_TENANT_INT")
+                        .HasColumnType("NVARCHAR2(30)")
+                        .HasMaxLength(30);
 
                     b.HasKey("Id");
 
                     b.HasIndex("AbpTenantId")
                         .IsUnique();
 
-                    b.ToTable("QaTenant");
+                    b.HasIndex("MasterId");
+
+                    b.ToTable("CT_CA_TENANT","QA");
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>
@@ -1964,9 +2079,9 @@ namespace qa.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Volo.Abp.TenantManagement.TenantConnectionString", b =>
+            modelBuilder.Entity("Volo.Saas.TenantConnectionString", b =>
                 {
-                    b.HasOne("Volo.Abp.TenantManagement.Tenant", null)
+                    b.HasOne("Volo.Saas.Tenant", null)
                         .WithMany("ConnectionStrings")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1975,11 +2090,15 @@ namespace qa.Migrations
 
             modelBuilder.Entity("qa.QaTenant", b =>
                 {
-                    b.HasOne("Volo.Abp.TenantManagement.Tenant", "AbpTenant")
+                    b.HasOne("Volo.Saas.Tenant", "AbpTenant")
                         .WithOne()
                         .HasForeignKey("qa.QaTenant", "AbpTenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("qa.QaTenant", "MasterTenant")
+                        .WithMany()
+                        .HasForeignKey("MasterId");
                 });
 #pragma warning restore 612, 618
         }
